@@ -32,7 +32,7 @@ import io.questdb.cairo.MetadataCacheReader;
 import io.questdb.griffin.SqlException;
 import io.questdb.griffin.SqlExecutionContext;
 import io.questdb.griffin.SqlExecutionContextImpl;
-import io.questdb.std.CharSequenceObjSortedHashMap;
+import io.questdb.std.CharSequenceObjHashMap;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Level;
@@ -57,7 +57,7 @@ import java.util.concurrent.TimeUnit;
 public class MetadataCacheSnapshotRefreshAddTablesOnlyBenchmark {
     private final CairoConfiguration configuration = new DefaultCairoConfiguration(".");
     private CairoEngine engine;
-    private CharSequenceObjSortedHashMap<CairoTable> cache;
+    private CharSequenceObjHashMap<CairoTable> cache;
 
     @Param({"100", "1000", "10000"})
     public String size;
@@ -93,7 +93,7 @@ public class MetadataCacheSnapshotRefreshAddTablesOnlyBenchmark {
     @Setup(Level.Iteration)
     public void setup() throws SqlException {
         engine = new CairoEngine(configuration);
-        cache = new CharSequenceObjSortedHashMap<>();
+        cache = new CharSequenceObjHashMap<>();
         int max = Integer.parseInt(size);
         for (int i = max - 1; i > -1; i--) {
             execute("CREATE TABLE table" + i + " ( ts TIMESTAMP, x INT, y DOUBLE, z SYMBOL );");

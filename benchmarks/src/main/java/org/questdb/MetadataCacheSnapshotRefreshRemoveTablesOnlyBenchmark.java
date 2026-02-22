@@ -32,7 +32,7 @@ import io.questdb.cairo.MetadataCacheReader;
 import io.questdb.griffin.SqlException;
 import io.questdb.griffin.SqlExecutionContext;
 import io.questdb.griffin.SqlExecutionContextImpl;
-import io.questdb.std.CharSequenceObjSortedHashMap;
+import io.questdb.std.CharSequenceObjHashMap;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Level;
@@ -61,7 +61,7 @@ public class MetadataCacheSnapshotRefreshRemoveTablesOnlyBenchmark {
     @Param({"100", "1000", "10000"})
     public String size;
 
-    private CharSequenceObjSortedHashMap<CairoTable>[] caches = new CharSequenceObjSortedHashMap[CACHES_NUMBER_FOR_ITERATION];
+    private CharSequenceObjHashMap<CairoTable>[] caches = new CharSequenceObjHashMap[CACHES_NUMBER_FOR_ITERATION];
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
@@ -99,7 +99,7 @@ public class MetadataCacheSnapshotRefreshRemoveTablesOnlyBenchmark {
 
         try (MetadataCacheReader metadataCacheReader = engine.getMetadataCache().readLock()) {
             for (int i = 0; i < CACHES_NUMBER_FOR_ITERATION; i++) {
-                CharSequenceObjSortedHashMap<CairoTable> cache = new CharSequenceObjSortedHashMap<>();
+                CharSequenceObjHashMap<CairoTable> cache = new CharSequenceObjHashMap<>();
                 metadataCacheReader.snapshot(cache, -1);
                 caches[i] = cache;
             }
