@@ -459,7 +459,7 @@ public class MetadataCache implements QuietCloseable {
 
             for (int i = localCache.size() - 1; i >= 0; i--) {
                 CairoTable cachedTable = localCache.getAt(i);
-                CairoTable latestTable = tableMap.get(cachedTable.getTableName());
+                CairoTable latestTable = tempTableMap.get(cachedTable.getTableName());
 
                 if (latestTable == null) {
                     localCache.remove(cachedTable.getTableName());
