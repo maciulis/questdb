@@ -443,7 +443,7 @@ public class MetadataCache implements QuietCloseable {
             return version;
         }
 
-        private void pullFromCairoTablesIntoCache(CharSequenceObjSortedHashMap<CairoTable> localCache, CharSequenceObjHashMap<CairoTable> tempTableMap) {
+        public void pullFromCairoTablesIntoCache(CharSequenceObjSortedHashMap<CairoTable> localCache, CharSequenceObjHashMap<CairoTable> tempTableMap) {
             for (int i = tempTableMap.size() - 1; i >= 0; i--) {
                 CairoTable latestTable = tempTableMap.getAt(i);
                 CairoTable cachedTable = localCache.get(latestTable.getTableName());
