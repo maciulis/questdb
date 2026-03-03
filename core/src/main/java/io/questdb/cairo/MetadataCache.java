@@ -436,10 +436,16 @@ public class MetadataCache implements QuietCloseable {
             if (priorVersion >= getVersion()) {
                 return priorVersion;
             }
-
+            
             // pull from cairoTables into localCache
-            for (int i = tableMap.size() - 1; i >= 0; i--) {
-                CairoTable latestTable = tableMap.getAt(i);
+            pullFromCairoTablesIntoCache(localCache, tableMap);
+
+            return version;
+        }
+
+        private void pullFromCairoTablesIntoCache(CharSequenceObjSortedHashMap<CairoTable> localCache, CharSequenceObjHashMap<CairoTable> tempTableMap) {
+            for (int i = tempTableMap.size() - 1; i >= 0; i--) {
+                CairoTable latestTable = tempTableMap.getAt(i);
                 CairoTable cachedTable = localCache.get(latestTable.getTableName());
 
                 if (
@@ -454,14 +460,12 @@ public class MetadataCache implements QuietCloseable {
 
             for (int i = localCache.size() - 1; i >= 0; i--) {
                 CairoTable cachedTable = localCache.getAt(i);
-                CairoTable latestTable = tableMap.get(cachedTable.getTableName());
+                CairoTable latestTable = tempTableMap.get(cachedTable.getTableName());
 
                 if (latestTable == null) {
                     localCache.remove(cachedTable.getTableName());
                 }
             }
-
-            return version;
         }
 
         @Override
