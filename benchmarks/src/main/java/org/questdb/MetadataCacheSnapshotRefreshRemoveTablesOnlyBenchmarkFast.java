@@ -84,7 +84,6 @@ public class MetadataCacheSnapshotRefreshRemoveTablesOnlyBenchmarkFast {
                 .measurementTime(TimeValue.seconds(5))
                 .measurementIterations(5)
                 .operationsPerInvocation(CACHES_NUMBER_FOR_ITERATION)
-                .forks(1)
                 .jvmArgs("-Xms2G", "-Xmx2G")
                 .forks(1)
                 .build();
