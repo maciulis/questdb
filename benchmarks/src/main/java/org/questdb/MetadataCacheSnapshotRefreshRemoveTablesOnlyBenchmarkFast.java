@@ -31,8 +31,6 @@ import io.questdb.cairo.DefaultCairoConfiguration;
 import io.questdb.cairo.MetadataCacheReader;
 import io.questdb.cairo.TableToken;
 import io.questdb.griffin.SqlException;
-import io.questdb.griffin.SqlExecutionContext;
-import io.questdb.griffin.SqlExecutionContextImpl;
 import io.questdb.std.CharSequenceObjHashMap;
 import io.questdb.std.str.CharSink;
 import org.jetbrains.annotations.NotNull;
@@ -83,7 +81,6 @@ public class MetadataCacheSnapshotRefreshRemoveTablesOnlyBenchmarkFast {
                 .measurementTime(TimeValue.seconds(5))
                 .measurementIterations(5)
                 .operationsPerInvocation(CACHES_NUMBER_FOR_ITERATION)
-                .forks(1)
                 .jvmArgs("-Xms2G", "-Xmx2G")
                 .forks(1)
                 .build();

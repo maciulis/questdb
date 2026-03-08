@@ -48,12 +48,12 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-
+import org.openjdk.jmh.runner.options.TimeValue;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
-@BenchmarkMode({Mode.AverageTime, Mode.SampleTime})
-@OutputTimeUnit(TimeUnit.MICROSECONDS)
+@BenchmarkMode({Mode.Throughput})
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class MetadataCacheSnapshotRefreshAddTablesOnlyBenchmark {
     private final CairoConfiguration configuration = new DefaultCairoConfiguration(".");
     private CairoEngine engine;
@@ -65,12 +65,12 @@ public class MetadataCacheSnapshotRefreshAddTablesOnlyBenchmark {
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(MetadataCacheSnapshotRefreshAddTablesOnlyBenchmark.class.getSimpleName())
-                .warmupIterations(1)
-                .warmupBatchSize(5)
-                .measurementBatchSize(10)
+                .warmupIterations(5)
+                .warmupTime(TimeValue.seconds(10))
+                .measurementTime(TimeValue.seconds(10))
                 .measurementIterations(5)
-                .operationsPerInvocation(1)
                 .forks(1)
+                .jvmArgs("-Xms2G", "-Xmx2G")
                 .build();
 
         new Runner(opt).run();
@@ -79,15 +79,11 @@ public class MetadataCacheSnapshotRefreshAddTablesOnlyBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     public void testCacheRefresh(Blackhole blackhole) {
+        cache.clear();
         try (MetadataCacheReader metadataCacheReader = engine.getMetadataCache().readLock()) {
             metadataCacheReader.snapshot(cache, -1);
             blackhole.consume(cache);
         }
-    }
-
-    @Setup(Level.Invocation)
-    public void clearCacheBeforeInvocation() {
-        cache.clear();
     }
 
     @Setup(Level.Iteration)
@@ -95,7 +91,7 @@ public class MetadataCacheSnapshotRefreshAddTablesOnlyBenchmark {
         engine = new CairoEngine(configuration);
         cache = new CharSequenceObjHashMap<>();
         int max = Integer.parseInt(size);
-        for (int i = max - 1; i > -1; i--) {
+        for (int i = 0; i < max; i++) {
             execute("CREATE TABLE table" + i + " ( ts TIMESTAMP, x INT, y DOUBLE, z SYMBOL );");
         }
     }
