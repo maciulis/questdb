@@ -119,7 +119,6 @@ public class MetadataCacheSnapshotRefreshRemoveTablesOnlyBenchmarkFast {
     @Benchmark
     public void testCacheRefresh(Blackhole blackhole) {
         try (MetadataCacheReaderDecorator metadataCacheReader = new MetadataCacheReaderDecorator(engine.getMetadataCache().readLock())) {
-            long start = System.nanoTime();
             for (int i = 0; i < CACHES_NUMBER_FOR_ITERATION; i++) {
                 metadataCacheReader.pullFromCairoTablesIntoCache(caches[i], emptyTempTableMap);
                 blackhole.consume(caches[i]);
