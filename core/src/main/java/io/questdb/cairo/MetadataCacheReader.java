@@ -42,5 +42,7 @@ public interface MetadataCacheReader extends QuietCloseable, Sinkable {
     boolean isVisibleTable(@NotNull CharSequence tableName);
 
     long snapshot(CharSequenceObjHashMap<CairoTable> localCache, long priorVersion);
+
+    void pullFromCairoTablesIntoCache(CharSequenceObjHashMap<CairoTable> localCache, CharSequenceObjHashMap<CairoTable> tempTableMap);
 }
 
