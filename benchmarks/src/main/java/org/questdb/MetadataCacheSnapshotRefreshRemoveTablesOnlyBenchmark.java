@@ -48,13 +48,15 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+import org.openjdk.jmh.runner.options.TimeValue;
 
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
+@BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class MetadataCacheSnapshotRefreshRemoveTablesOnlyBenchmark {
-    public static final int CACHES_NUMBER_FOR_ITERATION = 10;
+    public static final int CACHES_NUMBER_FOR_ITERATION = 10000;
     private CairoEngine engine;
     private final CairoConfiguration configuration = new DefaultCairoConfiguration(".");
 
@@ -66,11 +68,12 @@ public class MetadataCacheSnapshotRefreshRemoveTablesOnlyBenchmark {
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(MetadataCacheSnapshotRefreshRemoveTablesOnlyBenchmark.class.getSimpleName())
-                .warmupIterations(2)
-                .warmupBatchSize(1)
-                .measurementBatchSize(1)
+                .warmupIterations(5)
+                .warmupTime(TimeValue.seconds(30))
+                .measurementTime(TimeValue.seconds(30))
+                .measurementIterations(5)
                 .operationsPerInvocation(CACHES_NUMBER_FOR_ITERATION)
-                .measurementIterations(10)
+                .jvmArgs("-Xms2G", "-Xmx2G")
                 .forks(1)
                 .build();
 
@@ -78,7 +81,6 @@ public class MetadataCacheSnapshotRefreshRemoveTablesOnlyBenchmark {
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.SingleShotTime)
     public void testCacheRefresh(Blackhole blackhole) {
         try (MetadataCacheReader metadataCacheReader = engine.getMetadataCache().readLock()) {
             for (int i = 0; i < CACHES_NUMBER_FOR_ITERATION; i++) {
@@ -88,12 +90,12 @@ public class MetadataCacheSnapshotRefreshRemoveTablesOnlyBenchmark {
         }
     }
 
-    @Setup(Level.Iteration)
+    @Setup(Level.Invocation)
     public void setup() throws SqlException, InterruptedException {
         engine = new CairoEngine(configuration);
         int max = Integer.parseInt(size);
 
-        for (int i = max - 1; i > -1; i--) {
+        for (int i = 0; i < max; i++) {
             execute("CREATE TABLE table" + i + " ( ts TIMESTAMP, x INT, y DOUBLE, z SYMBOL );");
         }
 
@@ -112,11 +114,15 @@ public class MetadataCacheSnapshotRefreshRemoveTablesOnlyBenchmark {
 
     @TearDown(Level.Iteration)
     public void tearDown() throws SqlException, InterruptedException {
+        engine.close();
+    }
+
+    @TearDown(Level.Trial)
+    public void trialTearDown() throws SqlException {
         int max = Integer.parseInt(size);
         for (int i = 0; i < max; i++) {
             execute("drop table if exists table" + i);
         }
-        engine.close();
     }
 
     private void execute(String ddl) throws SqlException {
