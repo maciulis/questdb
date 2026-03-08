@@ -24,7 +24,6 @@
 
 package org.questdb;
 
-import com.sun.management.HotSpotDiagnosticMXBean;
 import io.questdb.cairo.CairoConfiguration;
 import io.questdb.cairo.CairoEngine;
 import io.questdb.cairo.CairoTable;
@@ -32,8 +31,6 @@ import io.questdb.cairo.DefaultCairoConfiguration;
 import io.questdb.cairo.MetadataCacheReader;
 import io.questdb.cairo.TableToken;
 import io.questdb.griffin.SqlException;
-import io.questdb.griffin.SqlExecutionContext;
-import io.questdb.griffin.SqlExecutionContextImpl;
 import io.questdb.std.CharSequenceObjHashMap;
 import io.questdb.std.CharSequenceObjSortedHashMap;
 import io.questdb.std.str.CharSink;
@@ -57,8 +54,6 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.openjdk.jmh.runner.options.TimeValue;
 
-import java.io.IOException;
-import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;

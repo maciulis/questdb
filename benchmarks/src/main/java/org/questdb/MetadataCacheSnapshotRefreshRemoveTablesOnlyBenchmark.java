@@ -98,7 +98,7 @@ public class MetadataCacheSnapshotRefreshRemoveTablesOnlyBenchmark {
         for (int i = 0; i < max; i++) {
             execute("CREATE TABLE table" + i + " ( ts TIMESTAMP, x INT, y DOUBLE, z SYMBOL );");
         }
-        long start = System.nanoTime();
+
         try (MetadataCacheReader metadataCacheReader = engine.getMetadataCache().readLock()) {
             for (int i = 0; i < CACHES_NUMBER_FOR_ITERATION; i++) {
                 CharSequenceObjSortedHashMap<CairoTable> cache = new CharSequenceObjSortedHashMap<>();

@@ -31,8 +31,6 @@ import io.questdb.cairo.DefaultCairoConfiguration;
 import io.questdb.cairo.MetadataCacheReader;
 import io.questdb.cairo.TableToken;
 import io.questdb.griffin.SqlException;
-import io.questdb.griffin.SqlExecutionContext;
-import io.questdb.griffin.SqlExecutionContextImpl;
 import io.questdb.std.CharSequenceObjHashMap;
 import io.questdb.std.CharSequenceObjSortedHashMap;
 import io.questdb.std.str.CharSink;
